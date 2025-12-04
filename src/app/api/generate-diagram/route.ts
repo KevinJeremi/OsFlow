@@ -1,21 +1,61 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 
-// Algion API Configuration (Free OpenAI-compatible API)
-// Documentation: https://algion.dev/
-const ALGION_API_KEY = "free";
-const ALGION_BASE_URL = "https://api.algion.dev/v1";
-const PRIMARY_MODEL = "claude-opus-4.5";
-const FALLBACK_MODEL = "gemini-2.5-pro";
+// Kolosal AI Configuration
+// Using their native chat API that's reliable and no proxy restrictions
+const KOLOSAL_API_KEY = process.env.KOLOSAL_API_KEY || "";
+const KOLOSAL_BASE_URL = process.env.KOLOSAL_BASE_URL || "https://api.kolosal.ai";
+const PRIMARY_MODEL = process.env.KOLOSAL_PRIMARY_MODEL || "llama-3-70b";
+const FALLBACK_MODEL = process.env.KOLOSAL_FALLBACK_MODEL || "mistral-7b-instruct";
+
+interface KolosalMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+interface KolosalResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+}
+
+// Utility function to fix common D2 syntax errors
+function fixD2Syntax(code: string): string {
+  let fixed = code;
+
+  // Fix sql_table field syntax: id { type: integer } -> id: integer
+  // Only for inline field definitions, not block definitions
+  fixed = fixed.replace(
+    /(\w+)\s*\{\s*(?:type|dtype|data_type)?\s*:\s*([^}]+)\s*\}/g,
+    '$1: $2'
+  );
+
+  // Fix constraint syntax: id: integer {constraint: primary_key} -> id: integer
+  // Only remove constraint braces, keep field values
+  fixed = fixed.replace(
+    /(\w+:\s*[^{]+)\s*\{[^}]*constraint[^}]*\}/g,
+    '$1'
+  );
+
+  // Fix incomplete blocks (e.g., "posts:" with no content)
+  // Replace "name:" with "name: {}" if it's followed by another block
+  fixed = fixed.replace(
+    /^(\s*\w+:)\s*\n(?=\s*\w+:|\s*\w+\.)/gm,
+    '$1 {}\n'
+  );
+
+  // Clean up any empty braces followed by content
+  fixed = fixed.replace(
+    /\{\s*\}\s*\n\s+(\w+:)/g,
+    '{\n  $1'
+  );
+
+  return fixed;
+}
 
 export async function POST(req: Request) {
   try {
-    // Initialize Algion API client (free, no API key validation needed)
-    const client = new OpenAI({
-      apiKey: ALGION_API_KEY,
-      baseURL: ALGION_BASE_URL,
-    });
-
     const body = await req.json();
     const { prompt, diagramType = "auto" } = body;
 
@@ -56,133 +96,127 @@ CRITICAL RULES:
 4. Do NOT explain anything
 5. Use valid D2 syntax only
 
-D2 SYNTAX FOR SQL/ER DIAGRAMS:
-IMPORTANT: For sql_table, add styling for visibility and size:
-- style.fill: header background color (use "#4A90D9" for blue)
-- style.font-color: header text color (use "#FFFFFF" for white)
-- style.font-size: use 18 or larger for readability
-- Use full type names (varchar, integer, timestamp) for wider columns
+⚠️ IMPORTANT: sql_table FIELD SYNTAX
+For sql_table, fields are SIMPLE KEY-VALUE pairs with colons, NOT nested blocks.
+WRONG: id { type: integer }
+CORRECT: id: integer
 
+Full sql_table example:
 users: {
   shape: sql_table
-  style.fill: "#4A90D9"
-  style.font-color: "#FFFFFF"
-  style.font-size: 18
-  id: integer {constraint: primary_key}
-  username: varchar(100)
-  email: varchar(255) {constraint: unique}
-  password_hash: varchar(255)
-  first_name: varchar(100)
-  last_name: varchar(100)
-  phone: varchar(20)
+  id: integer
+  username: varchar
+  email: varchar
   created_at: timestamp
-  updated_at: timestamp
 }
 
-addresses: {
-  shape: sql_table
-  style.fill: "#4A90D9"
-  style.font-color: "#FFFFFF"
-  style.font-size: 18
-  id: integer {constraint: primary_key}
-  user_id: integer {constraint: foreign_key}
-  street: varchar(255)
-  city: varchar(100)
-  state: varchar(100)
-  postal_code: varchar(20)
-  country: varchar(100)
-  is_default: boolean
-}
+VALID D2 SYNTAX BY TYPE:
 
-orders: {
+1️⃣ FOR SQL/ER DIAGRAMS:
+users: {
   shape: sql_table
-  style.fill: "#4A90D9"
-  style.font-color: "#FFFFFF"
-  style.font-size: 18
-  id: integer {constraint: primary_key}
-  user_id: integer {constraint: foreign_key}
-  shipping_address_id: integer {constraint: foreign_key}
-  status: varchar(50)
-  total_amount: decimal(10,2)
+  id: integer
+  name: varchar
+  email: varchar
   created_at: timestamp
 }
 
 products: {
   shape: sql_table
-  style.fill: "#4A90D9"
-  style.font-color: "#FFFFFF"
-  style.font-size: 18
-  id: integer {constraint: primary_key}
-  category_id: integer {constraint: foreign_key}
-  name: varchar(255)
-  description: text
-  price: decimal(10,2)
-  stock_qty: integer
-  sku: varchar(50) {constraint: unique}
-  created_at: timestamp
+  id: integer
+  name: varchar
+  price: decimal
 }
 
-order_items: {
-  shape: sql_table
-  style.fill: "#4A90D9"
-  style.font-color: "#FFFFFF"
-  style.font-size: 18
-  id: integer {constraint: primary_key}
-  order_id: integer {constraint: foreign_key}
-  product_id: integer {constraint: foreign_key}
-  quantity: integer
-  unit_price: decimal(10,2)
+users.id -> products.user_id
+
+2️⃣ FOR FLOWCHARTS:
+start: {shape: oval}
+validate: {shape: diamond}
+process: {shape: rectangle}
+end: {shape: oval}
+
+start -> validate
+validate -> process
+process -> end
+
+3️⃣ FOR ARCHITECTURE:
+frontend: {
+  web: Web App
+  mobile: Mobile App
 }
-
-users.id -> orders.user_id
-users.id -> addresses.user_id
-addresses.id -> orders.shipping_address_id
-orders.id -> order_items.order_id
-products.id -> order_items.product_id
-
-OTHER D2 SYNTAX:
-
-## Basic Shapes
-shape_name: Label {shape: oval}
-a -> b: connection label
-
-## Nested Containers
-server: {
-  api: API
-  db: DB {shape: cylinder}
+backend: {
+  api: API Server
+  db: Database
 }
+frontend -> backend
 
-## Direction
-direction: right
+4️⃣ FOR SEQUENCE:
+actor1: Actor 1
+actor2: Actor 2
+actor1 -> actor2: Message
+actor2 -> actor1: Response
 
 REQUEST: "${prompt}"
 
-Generate D2 code now (no explanations):`;
+Generate D2 code now (output ONLY the code, nothing else):`;
 
     const models = [PRIMARY_MODEL, FALLBACK_MODEL];
     let lastError = null;
 
     for (const modelName of models) {
       try {
-        console.log(`Trying model: ${modelName}`);
+        console.log(`[D2 Generator] Trying model: ${modelName}`);
 
-        const response = await client.chat.completions.create({
+        if (!KOLOSAL_API_KEY) {
+          throw new Error("KOLOSAL_API_KEY environment variable is not set");
+        }
+
+        const messages: KolosalMessage[] = [
+          {
+            role: "system",
+            content: "You are a D2 diagram code generator. Output ONLY valid D2 syntax. Never include explanations or markdown code blocks.",
+          },
+          {
+            role: "user",
+            content: systemPrompt,
+          },
+        ];
+
+        const payload = {
           model: modelName,
-          messages: [
-            {
-              role: "system",
-              content: "You are a D2 diagram code generator. Output ONLY valid D2 syntax. Never include explanations or markdown code blocks.",
-            },
-            {
-              role: "user",
-              content: systemPrompt,
-            },
-          ],
+          messages: messages,
           max_tokens: 2000,
           temperature: 0.3,
+        };
+
+        console.log(`[D2 Generator] Calling Kolosal API with payload:`, {
+          model: modelName,
+          messagesCount: messages.length,
+          maxTokens: 2000,
         });
 
-        let text = response.choices[0]?.message?.content?.trim() || "";
+        const response = await fetch(`${KOLOSAL_BASE_URL}/v1/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${KOLOSAL_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        console.log(`[D2 Generator] Response status: ${response.status}`);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`[D2 Generator] API Error (${response.status}):`, errorText);
+          lastError = new Error(`API Error: ${response.status} - ${errorText.substring(0, 200)}`);
+          continue;
+        }
+
+        const data = (await response.json()) as KolosalResponse;
+
+        let text = data.choices?.[0]?.message?.content?.trim() || "";
 
         console.log(`[${modelName}] Raw response length: ${text.length}`);
         console.log(`[${modelName}] Raw response (first 500 chars): ${text.substring(0, 500)}`);
@@ -193,6 +227,7 @@ Generate D2 code now (no explanations):`;
           continue;
         }
 
+        // Remove thinking tags if present
         if (text.includes("</think>")) {
           const afterThink = text.split("</think>").pop()?.trim() || "";
           if (afterThink) {
@@ -205,6 +240,7 @@ Generate D2 code now (no explanations):`;
           continue;
         }
 
+        // Check for refusal
         if (
           text.includes("INVALID_REQUEST_TYPE") ||
           text.toLowerCase().includes("i cannot") ||
@@ -236,7 +272,7 @@ Generate D2 code now (no explanations):`;
           /[\w\s]+\s*<->/,
           /[\w\s]+\s*--/,
           /shape:\s*\w+/i,
-          /direction:\s*\w+/i,
+          /direction:\s*(up|down|left|right)/i,
         ];
 
         const containsValidPattern = validD2Patterns.some((pattern) =>
@@ -245,6 +281,7 @@ Generate D2 code now (no explanations):`;
 
         if (!containsValidPattern) {
           lastError = new Error("No valid D2 pattern found");
+          console.log(`[${modelName}] No valid D2 pattern found, trying next model...`);
           continue;
         }
 
@@ -257,29 +294,42 @@ Generate D2 code now (no explanations):`;
           .replace(/\t/g, "  ")
           .replace(/\n{3,}/g, "\n\n");
 
+        // Simple line-by-line processing - keep everything that looks like D2
         const lines = d2Code.split('\n');
         const cleanLines: string[] = [];
+        let braceDepth = 0;
         let foundCode = false;
 
         for (const line of lines) {
           const trimmedLine = line.trim();
-          if (!foundCode && !trimmedLine) continue;
 
+          // Count braces to track if we're inside a block
+          braceDepth += (line.match(/\{/g) || []).length;
+          braceDepth -= (line.match(/\}/g) || []).length;
+
+          // Skip leading empty lines before first code
+          if (!foundCode && !trimmedLine && braceDepth === 0) continue;
+
+          // A line is valid D2 if:
+          // 1. It's inside a block (braceDepth > 0)
+          // 2. It starts a definition (contains : or -> or similar)
+          // 3. It's a brace or comment
           const isD2Line =
-            /^[\w\s\-_]+:/.test(trimmedLine) ||
-            /^[\w\s\-_]+\s*->/.test(trimmedLine) ||
+            braceDepth > 0 || // Inside a block
+            /^[\w\-_]+\s*:\s*.+/.test(trimmedLine) || // key: value
+            /^[\w\-_]+\s*:(\s*\{)?/.test(trimmedLine) || // key: or key: {
+            /^[\w\s\-_]+\s*->/.test(trimmedLine) || // connections
             /^[\w\s\-_]+\s*<-/.test(trimmedLine) ||
             /^[\w\s\-_]+\s*--/.test(trimmedLine) ||
+            /^[\w\s\-_]+\s*<->/.test(trimmedLine) ||
             /^direction:/.test(trimmedLine) ||
             /^shape:/.test(trimmedLine) ||
             /^style\./.test(trimmedLine) ||
             /^classes:/.test(trimmedLine) ||
             /^vars:/.test(trimmedLine) ||
             /^#/.test(trimmedLine) ||
-            /^\}/.test(trimmedLine) ||
-            /^\{/.test(trimmedLine) ||
-            trimmedLine === '' ||
-            /^\s+[\w\s\-_]+/.test(line);
+            /^[\{\}]/.test(trimmedLine) ||
+            trimmedLine === '';
 
           if (isD2Line || foundCode) {
             foundCode = true;
@@ -289,7 +339,7 @@ Generate D2 code now (no explanations):`;
 
         d2Code = cleanLines.join('\n').trim();
 
-        // Fix unbalanced braces - count opening and closing braces
+        // Fix unbalanced braces
         let openBraces = 0;
         let closeBraces = 0;
         for (const char of d2Code) {
@@ -297,30 +347,33 @@ Generate D2 code now (no explanations):`;
           if (char === '}') closeBraces++;
         }
 
-        // Add missing closing braces if needed
         if (openBraces > closeBraces) {
           const missingBraces = openBraces - closeBraces;
           d2Code += '\n' + '}'.repeat(missingBraces);
         }
 
+        // Fix common D2 syntax errors
+        d2Code = fixD2Syntax(d2Code);
+
         console.log(`[${modelName}] Final D2 code length: ${d2Code.length}`);
         console.log(`[${modelName}] Final D2 code:\n${d2Code}`);
-        console.log(`Success with model: ${modelName}`);
+        console.log(`✓ Success with model: ${modelName}`);
+
         return NextResponse.json({ d2: d2Code }, { status: 200 });
       } catch (error) {
-        console.warn(`Model ${modelName} failed:`, error);
+        console.warn(`[D2 Generator] Model ${modelName} failed:`, error);
         lastError = error;
         continue;
       }
     }
 
-    console.error("All models failed. Last error:", lastError);
+    console.error("[D2 Generator] All models failed. Last error:", lastError);
     return NextResponse.json(
       { error: "Unable to generate a valid diagram. Please provide more details about the process or system you want to visualize." },
       { status: 400 }
     );
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("[D2 Generator] API Error:", error);
     return NextResponse.json(
       { error: "Failed to generate diagram. Please try again." },
       { status: 500 }
