@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Workflow, ChevronDown } from "lucide-react";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const scrollToSection = (sectionId: string) => {
@@ -18,16 +18,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Left - Logo */}
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/logo.png"
-                alt="OsFlow Logo"
-                width={100}
-                height={100}
-                className="h-25 w-auto"
-                priority
-              />
-            </Link>
+            <Logo />
           </div>
 
           {/* Center - Navigation */}

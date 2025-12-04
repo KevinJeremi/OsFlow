@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { SidebarProps, DiagramType } from "../types";
 import { MOCK_HISTORY, DIAGRAM_TYPES } from "../constants";
+import Logo from "../../../components/Logo";
 
 const DIAGRAM_ICONS: Record<DiagramType, React.ReactNode> = {
     auto: <Wand2 className="w-3.5 h-3.5" />,
@@ -65,16 +65,7 @@ export const Sidebar = ({
         `}
             >
                 <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100 bg-white sticky top-0 z-10">
-                    <Link href="/" className="flex items-center gap-2">
-                        <Image
-                            src="/logo.png"
-                            alt="OsFlow Logo"
-                            width={80}
-                            height={80}
-                            className="h-25 w-auto"
-                            priority
-                        />
-                    </Link>
+                    <Logo href="/" showIcon={true} className="flex items-center gap-2" />
                     <button
                         onClick={onClose}
                         className="md:hidden p-2 -mr-2 text-gray-500 hover:text-black hover:bg-gray-100 rounded-full"

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Workflow, ArrowRight, Github, Twitter } from "lucide-react";
+import Logo from "./Logo";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -31,7 +32,7 @@ export default function Footer() {
           <p className="text-gray-500 text-lg md:text-xl mb-10 leading-relaxed">
             Stop wrestling with drag-and-drop tools. Start creating beautiful diagrams with natural language today.
           </p>
-          
+
           <Link href="/generate">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -47,15 +48,10 @@ export default function Footer() {
         {/* Footer Bottom Grid */}
         <div className="border-t border-gray-100 pt-12 md:pt-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-            
+
             {/* Brand Column */}
             <div className="col-span-1 md:col-span-2 space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="bg-sky-500 rounded-xl p-2 rotate-3 shadow-lg shadow-sky-500/20">
-                  <Workflow className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold text-black tracking-tight">OsFlow</span>
-              </div>
+              <Logo href="/" showIcon={true} className="flex items-center gap-2" />
               <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
                 The fastest way to visualize your ideas. Powered by AI, designed for humans.
               </p>
@@ -81,7 +77,7 @@ export default function Footer() {
                 </a>
               </div>
               <p className="text-xs text-gray-400 mt-auto pt-4">
-                 © {currentYear} OsFlow Inc.
+                © {currentYear} OsFlow Inc.
               </p>
             </div>
 
