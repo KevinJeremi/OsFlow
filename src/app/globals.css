@@ -1,0 +1,656 @@
+@import "tailwindcss";
+
+/* HIGHEST PRIORITY - SQL Table Fixes - Must come first! */
+[data-mermaid] svg .sql_table,
+svg .sql_table {
+  overflow: visible !important;
+}
+
+[data-mermaid] svg .sql_table g text,
+svg .sql_table g text {
+  font-size: 12px !important;
+  font-family: "Courier New", monospace !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  text-anchor: start !important;
+  dominant-baseline: middle !important;
+  fill: #1f2937 !important;
+  text-rendering: geometricPrecision !important;
+  letter-spacing: -0.05px !important;
+  max-width: 95px !important;
+}
+
+/* Table content with longer text columns */
+[data-mermaid] svg .sql_table g text:nth-child(3n+3),
+svg .sql_table g text:nth-child(3n+3) {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  word-break: break-all !important;
+  max-width: 85px !important;
+}
+
+/* SQL table header - centered and larger */
+[data-mermaid] svg .sql_table g > text:first-child,
+svg .sql_table g > text:first-child {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+  fill: white !important;
+  dominant-baseline: middle !important;
+  letter-spacing: normal !important;
+}
+
+/* Column headers - center aligned */
+[data-mermaid] svg .sql_table g > text:nth-child(2),
+svg .sql_table g > text:nth-child(2) {
+  text-anchor: middle !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+}
+
+/* Data type columns - right aligned */
+[data-mermaid] svg .sql_table g > text:nth-child(3),
+svg .sql_table g > text:nth-child(3) {
+  text-anchor: end !important;
+  font-weight: 400 !important;
+  font-size: 11px !important;
+}
+
+/* Constraint columns - center aligned */
+[data-mermaid] svg .sql_table g > text:nth-child(4), 
+svg .sql_table g > text:nth-child(4) {
+  text-anchor: middle !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
+}
+
+/* SQL table cell spacing and sizing */
+[data-mermaid] svg .sql_table {
+  min-width: auto !important;
+}
+[data-mermaid] svg .sql_table rect {
+  min-height: 28px !important;
+  height: auto !important;
+  min-width: 100px !important;
+  max-width: 110px !important;
+  fill: #f8fafc !important;
+  stroke: #475569 !important;
+  stroke-width: 1px !important;
+}
+
+/* Table header - slightly larger */
+[data-mermaid] svg .sql_table rect:first-child {
+  min-height: 38px !important;
+  fill: #475569 !important;
+}
+
+[data-mermaid] svg .sql_table g {
+  transform: none !important;
+}
+
+/* DANGANANAN - CSS STYLING FOR FIXES AND ENHANCED SKETCH MODE */
+/* ================================================================= */
+/* Sketch Text Enhancements - Variations for natural drawing look */
+
+[data-mermaid="true"][data-sketch="true"] svg text.tspan:nth-child(odd),
+svg[data-sketch="true"] text.tspan:nth-child(odd) {
+  font-size: 102% !important;
+  font-style: italic !important;
+  letter-spacing: 0.08em !important;
+}
+
+[data-mermaid="true"][data-sketch="true"] svg text.tspan:nth-child(even),
+svg[data-sketch="true"] text.tspan:nth-child(even) {
+  font-size: 96% !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* SQL tables get special sketch treatment */
+[data-mermaid="true"][data-sketch="true"] svg .sql_table text,
+svg[data-sketch="true"] .sql_table text {
+  font-family: "Comic Sans MS", "Courier New", monospace !important;
+  letter-spacing: 0.1em !important;
+  word-spacing: 2px !important;
+}
+
+[data-mermaid="true"][data-sketch="true"] svg .sql_table g > text:first-child,
+svg[data-sketch="true"] .sql_table g > text:first-child {
+  font-size: 14px !important;
+  transform: rotate(-0.8deg) scale(1.05) !important;
+}
+
+/* Small text gets more variation */
+[data-mermaid="true"][data-sketch="true"] svg text[font-size="10"],
+svg[data-sketch="true"] text[font-size="10"] {
+  font-size: 11px !important;
+  transform: rotate(0.1deg) !important;
+}
+
+[data-mermaid="true"][data-sketch="true"] svg text[font-size="11"],
+svg[data-sketch="true"] text[font-size="11"] {
+  font-size: 10px !important;
+  transform: rotate(-0.2deg) !important;
+}
+
+/* Hand-drawn shapes with more irregularity */
+[data-mermaid="true"][data-sketch="true"] svg rect,
+svg[data-sketch="true"] rect {
+  stroke-dasharray: 0.8, 1.2, 0.5, 1.5 !important;
+  stroke-linecap: round !important;
+  animation: sketch-draw 0.1s infinite alternate !important;
+}
+
+@keyframes sketch-draw {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 2px; }
+}
+
+/* Path elements - connector lines with dash patterns */
+[data-mermaid="true"][data-sketch="true"] svg path,
+svg[data-sketch="true"] path {
+  stroke-dasharray: 3, 4, 2, 5 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* Enhanced shadow and depth for sketch mode */
+[data-mermaid="true"][data-sketch="true"] svg text,
+svg[data-sketch="true"] text {
+  filter: drop-shadow(0.5px 0.3px 0px rgba(0,0,0,0.15)) !important;
+}
+
+/* END SQL TABLE FIXES AND ENHANCED SKETCH MODE */
+
+/* SKETCH MODE STYLING - Make text look hand-drawn when sketch mode is enabled */
+[data-mermaid="true"][data-sketch="true"] svg,
+svg[data-sketch="true"] {
+  /* Make text appear hand-drawn */
+}
+
+[data-mermaid="true"][data-sketch="true"] svg text,
+svg[data-sketch="true"] text {
+  /* Hand-drawn text styling */
+  font-family: "Comic Sans MS", "Indie Flower", "Kalam", cursive, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 400 !important;
+  text-rendering: optimizeLegibility !important;
+  /* Add slight irregularity to mimic handwriting */
+  transform: rotate(0.2deg) !important;
+  opacity: 0.9 !important;
+}
+
+/* Different text variations for more natural look */
+[data-mermaid="true"][data-sketch="true"] svg text:nth-child(odd),
+svg[data-sketch="true"] text:nth-child(odd) {
+  transform: rotate(-0.1deg) !important;
+  opacity: 0.95 !important;
+}
+
+[data-mermaid="true"][data-sketch="true"] svg text:nth-child(even),
+svg[data-sketch="true"] text:nth-child(even) {
+  transform: rotate(0.3deg) !important;
+  opacity: 0.85 !important;
+}
+
+/* Text shadow for depth */
+[data-mermaid="true"][data-sketch="true"] svg text,
+svg[data-sketch="true"] text {
+  filter: drop-shadow(0.5px 0.5px 0px rgba(0,0,0,0.1)) !important;
+}
+
+/* Different font sizes with slight variations */
+[data-mermaid="true"][data-sketch="true"] svg text.tspan,
+svg[data-sketch="true"] text.tspan {
+  /* Slight size variations for natural look */
+  font-size: 98% !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Table headers in sketch mode */
+[data-mermaid="true"][data-sketch="true"] svg .sql_table g > text:first-child,
+svg[data-sketch="true"] .sql_table g > text:first-child {
+  font-family: "Comic Sans MS", "Indie Flower", "Kalam", cursive, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  transform: rotate(-0.5deg) !important;
+  letter-spacing: 0.1em !important;
+}
+
+/* Shape edges in sketch mode */
+[data-mermaid="true"][data-sketch="true"] svg rect,
+[data-mermaid="true"][data-sketch="true"] svg polygon,
+[data-mermaid="true"][data-sketch="true"] svg circle,
+svg[data-sketch="true"] rect,
+svg[data-sketch="true"] polygon,
+svg[data-sketch="true"] circle {
+  stroke-dasharray: 0.5 1 !important;
+  stroke-width: 1.5px !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* Path/connector lines in sketch mode */
+[data-mermaid="true"][data-sketch="true"] svg path,
+svg[data-sketch="true"] path {
+  stroke-dasharray: 2 3 !important;
+  stroke-width: 2px !important;
+  fill: none !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+/* Custom scrollbar for sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* D2 Diagram SVG Enhancements */
+.mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: visible !important;
+}
+
+.mermaid-container {
+  transition: transform 0.1s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+}
+
+/* D2 SQL Table specific fixes - prevent header clipping */
+[data-mermaid] svg .sql_table,
+[data-mermaid] svg [class*="sql"],
+svg .sql_table,
+svg [class*="sql"] {
+  overflow: visible !important;
+}
+
+/* More specific SQL table text fixes - override all other rules */
+[data-mermaid] svg .sql_table g text,
+svg .sql_table g text {
+  font-size: 9px !important;
+  font-family: "Courier New", monospace !important;
+  font-weight: 400 !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  text-anchor: start !important;
+  dominant-baseline: middle !important;
+  fill: #1f2937 !important;
+}
+
+/* SQL table header text */
+[data-mermaid] svg .sql_table g > text:first-child,
+svg .sql_table g > text:first-child {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+  fill: white !important;
+}
+
+/* SQL table cell rectangles - ensure proper sizing */
+[data-mermaid] svg .sql_table rect,
+svg .sql_table rect {
+  width: auto !important;
+  height: 25px !important;
+  fill: #f8fafc !important;
+  stroke: #475569 !important;
+  stroke-width: 1px !important;
+}
+
+/* SQL table header rectangles */
+[data-mermaid] svg .sql_table rect:first-child,
+svg .sql_table rect:first-child {
+  fill: #475569 !important;
+  height: 30px !important;
+}
+
+/* Fix table text wrapping and prevent overflow */
+[data-mermaid] svg .sql_table text,
+svg .sql_table text,
+svg [class*="table"] text,
+svg table text,
+svg rect + text {
+  font-size: 11px !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  word-wrap: break-word !important;
+  text-anchor: start !important;
+  dominant-baseline: hanging !important;
+  letter-spacing: -0.2px !important;
+}
+
+/* Table column text adjustments */
+[data-mermaid] svg g text,
+svg g text {
+  font-size: 10px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  max-width: 80px !important;
+  text-anchor: start !important;
+  dominant-baseline: middle !important;
+}
+
+/* Table header styling */
+[data-mermaid] svg .sql_table > g > text:first-child,
+svg .sql_table > g > text:first-child {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  white-space: normal !important;
+  text-anchor: middle !important;
+  dominant-baseline: middle !important;
+}
+
+/* Adjust table cell spacing */
+[data-mermaid] svg .sql_table g,
+svg .sql_table g {
+  transform: translateY(2px) !important;
+}
+
+/* Table header text - ensure full visibility */
+[data-mermaid] svg .sql_table text:first-of-type,
+[data-mermaid] svg rect + text,
+svg .sql_table text:first-of-type,
+svg rect + text {
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  white-space: normal !important;
+}
+
+/* D2 SVG Text Rendering - Sharp and Clean */
+[data-mermaid] svg text:not(.sql_table text),
+svg text:not(.sql_table text) {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-rendering: optimizeLegibility;
+  text-rendering: optimizeSpeed;
+  shape-rendering: crispEdges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 12px !important;
+}
+
+[data-mermaid] svg,
+svg {
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Ensure all text elements are visible and properly colored */
+[data-mermaid] svg text,
+svg text {
+  fill: #1f2937 !important;
+  stroke: none !important;
+  font-weight: 500;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+/* Text tspan elements */
+[data-mermaid] svg text tspan,
+svg text tspan {
+  fill: #1f2937 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 500;
+}
+
+/* Shape borders and fills for clarity */
+[data-mermaid] svg rect,
+[data-mermaid] svg polygon,
+[data-mermaid] svg circle,
+[data-mermaid] svg ellipse,
+[data-mermaid] svg path {
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+}
+
+/* Flowchart shapes */
+svg rect.node {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+  stroke-width: 2px !important;
+  rx: 4px;
+  ry: 4px;
+}
+
+svg polygon.node {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+  stroke-width: 2px !important;
+}
+
+svg circle.node {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+  stroke-width: 2px !important;
+}
+
+/* Connection lines */
+svg path.edge,
+svg .link,
+svg .connection {
+  stroke: #475569 !important;
+  stroke-width: 2px !important;
+  fill: none !important;
+}
+
+svg path.edge.dashed {
+  stroke-dasharray: 5, 5 !important;
+}
+
+/* Arrowheads */
+svg marker polygon,
+svg defs marker polygon {
+  fill: #475569 !important;
+}
+
+/* Database/table shapes */
+svg path[stroke="#000"],
+svg rect[stroke="#000"] {
+  stroke: #0284c7 !important;
+  fill: #e0f2fe !important;
+}
+
+/* Edge labels */
+svg .edge-label,
+svg .label {
+  background-color: #ffffff !important;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+svg .edge-label text,
+svg .label text {
+  font-size: 14px !important;
+  fill: #475569 !important;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Ensure SVG elements overflow properly */
+svg {
+  overflow: visible !important;
+}
+
+svg g {
+  overflow: visible !important;
+}
+
+svg foreignObject {
+  overflow: visible !important;
+}
+
+/* Mermaid SVG Enhancements (legacy) */
+[data-mermaid] svg .node rect,
+[data-mermaid] svg .node circle,
+[data-mermaid] svg .node ellipse,
+[data-mermaid] svg .node polygon,
+[data-mermaid] svg .node path {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+  stroke-width: 2px !important;
+}
+
+[data-mermaid] svg .edgePath .path {
+  stroke: #64748b !important;
+  stroke-width: 2px !important;
+}
+
+[data-mermaid] svg .edgeLabel {
+  background-color: #ffffff !important;
+}
+
+[data-mermaid] svg text {
+  fill: #1e293b !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+  dominant-baseline: central !important;
+}
+
+/* Sequence diagram text - larger and bolder */
+[data-mermaid] svg .messageText {
+  fill: #1e293b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+}
+
+[data-mermaid] svg .actor-man text,
+[data-mermaid] svg .actor text,
+[data-mermaid] svg text.actor {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-anchor: middle !important;
+  dominant-baseline: central !important;
+}
+
+/* Flowchart node text */
+[data-mermaid] svg .nodeLabel,
+[data-mermaid] svg .node .label {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Edge labels */
+[data-mermaid] svg .edgeLabel text,
+[data-mermaid] svg .labelText {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+}
+
+/* Class diagram specific styles */
+[data-mermaid] svg .classGroup rect {
+  fill: #f0f9ff !important;
+  stroke: #0284c7 !important;
+  stroke-width: 2px !important;
+}
+
+[data-mermaid] svg .classGroup line {
+  stroke: #cbd5e1 !important;
+}
+
+[data-mermaid] svg .classLabel .box {
+  fill: #0284c7 !important;
+}
+
+[data-mermaid] svg .classLabel .label {
+  fill: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* Flowchart specific styles */
+[data-mermaid] svg .flowchart-link {
+  stroke: #64748b !important;
+}
+
+/* Sequence diagram styles */
+[data-mermaid] svg .actor {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+}
+
+[data-mermaid] svg .messageText {
+  fill: #1e293b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+}
+
+[data-mermaid] svg .loopText {
+  fill: #64748b !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-anchor: middle !important;
+}
+
+[data-mermaid] svg .loopText tspan {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+[data-mermaid] svg .labelText,
+[data-mermaid] svg .sequenceNumber {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-anchor: middle !important;
+}
+
+/* Ensure visibility */
+svg .node > * {
+  visibility: visible !important;
+}
+
+svg text {
+  visibility: visible !important;
+}
+
+/* Prevent text clipping in diagrams */
+[data-mermaid] svg {
+  overflow: visible !important;
+}
+
+[data-mermaid] svg g {
+  overflow: visible !important;
+}
+
+[data-mermaid] svg .actor-box,
+[data-mermaid] svg .actor {
+  overflow: visible !important;
+}
+
+[data-mermaid] svg foreignObject {
+  overflow: visible !important;
+}
+
+[data-mermaid] svg .messageText,
+[data-mermaid] svg .noteText,
+[data-mermaid] svg .labelText {
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
